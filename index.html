@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div><button onclick="openWindow()">click to open new Window</button></div>
+    <div><textarea name="" id="receivedMsg" cols="20" rows="10" placeholder="Received Message"></textarea></div>
+    <!-- <div id="receivedMsg"></div> -->
+    <div>
+      <textarea name="" id="sendMsg" cols="20" rows="10" placeholder="Write message to send"></textarea>
+      
+      <button onclick="sendMessage()">Reply</button>
+    </div>
+    <div>
+      <h3>Active windows</h3>
+      <div id="activeWin"></div>
+    </div>
+
+    <div id="msgArea" style="display: none;">
+      <textarea name="" id="msg" cols="30" rows="10"></textarea>
+      <button onclick="sendMsg()"> Send</button>
+    </div>
+</body>
+<script src="index.js"></script>
+</html>
