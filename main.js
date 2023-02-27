@@ -51,6 +51,14 @@ const createSecWin=()=>{
 
     })
     // console.log(secWin)
+
+
+    mainWindow.on("focus",()=>{
+        app.setBadgeCount(0);
+    })
+   
+
+
 }
 
 app.whenReady()
@@ -65,6 +73,7 @@ ipcMain.on("message1",(e,msg)=>{
     track = e.sender;
     // console.log(track.id)
     mainWindow.send("channel1",{msg,id:e.sender.id})
+    app.setBadgeCount(app.getBadgeCount() + 1);
 })
 ipcMain.on("message2",(e,msg)=>{
     //receiving message from main window
@@ -72,20 +81,30 @@ ipcMain.on("message2",(e,msg)=>{
     createSecWin();
     mainWindow.send("sending",secWin.webContents.id);
     // console.log(webContents.getAllWebContents())
+    app.setBadgeCount(app.getBadgeCount() + 1);
 })
 
 ipcMain.on("parent",(e,msg)=>{
     // console.log(msg)
-    track.send("child",msg)
+    let msgObj = {
+        id: e.sender.id,
+        message : msg
+    }
+    track.send("child",msgObj)
+    app.setBadgeCount(app.getBadgeCount() + 1);
 })
 
 ipcMain.on("main-msg",(e,msg)=>{
-    // console.log(msg.message);
-    // console.log(msg.winId)
     let msgToSend =msg.message;
     let windowId = msg.winId;
     
     let selectedWin = allChildWindow.get(windowId);
     // console.log(selectedWin)
-    selectedWin.send("child",msgToSend)
+    selectedWin.send("child",{msgToSend,windowId})
+    app.setBadgeCount(app.getBadgeCount() + 1);
 })
+
+// app.on('browser-window-focus',()=>{
+//     app.setBadgeCount(0);
+// })
+

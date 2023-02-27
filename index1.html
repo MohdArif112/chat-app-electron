@@ -1,40 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- <title>Document</title> -->
-</head>
-<body>
+  </head>
+  <body>
     <div>
-        <textarea name="" id="msg" cols="10" rows="10" placeholder="sendMessage"></textarea> 
-        <button onclick="sendMsg()">send</button>
+      <textarea
+        name=""
+        id="msg"
+        cols="10"
+        rows="10"
+        placeholder="sendMessage"
+      ></textarea>
+      <button onclick="sendMsg()">send</button>
     </div>
-   <br>
-   <br>
-   <div>
-       <textarea name="" id="recMsg" cols="10" rows="10" placeholder="Received Message" readonly></textarea>
-   </div>
+    <br />
+    <br />
+    <div>
+      <textarea
+        name=""
+        id="recMsg"
+        cols="10"
+        rows="10"
+        placeholder="Received Message"
+        readonly
+      ></textarea>
+    </div>
 
-   
+
+    <!-- <div>
+        <h3>Active windows</h3>
+        <div id="activeWin"></div>
+      </div> -->
+
+
+     <!-- div for send message to other child; -->
+
+    <div>
+         <h2>Send message to sepcific window</h2>
+        <input type="number" id="childId"  placeholder="enter Id of window"><br><br>
+        <textarea name="" cols="20" rows="10" id="msgTochild" placeholder="Write your message"></textarea>
+        <button onclick="sendMsgToChild()">Send</button>
+        
+    </div>
+
     <script>
+      const { ipcRenderer } = require("electron");
+     let receiveMsgDiv = document.getElementById("recMsg")
 
-        const {ipcRenderer,remote}= require("electron");
-        console.log(remote)
-        // let Id = window.id
-        // console.log(window.id)
-        function sendMsg(){
-            // console.log(Id)
-            let msg= document.getElementById("msg").value
-            ipcRenderer.send("message1",msg);
-            // console.log(webContents)
+      // let Id = window.id
+      // console.log(window.id)
+      function sendMsg() {
+        // console.log(Id)
+        let msg = document.getElementById("msg").value;
+        ipcRenderer.send("message1", msg);
+        // console.log(webContents)
+      }
+      ipcRenderer.on("child", (e, msg) => {
+        let preMsg = receiveMsgDiv.value
+        console.log(msg);
+        receiveMsgDiv.innerText = `${preMsg} \n message received from ${msg.windowId} : ${msg.msgToSend}`
+      });
+
+      // let winId;
+
+      // let mainActiveWindowDiv = document.getElementById("activeWin");
+      // mainActiveWindowDiv.addEventListener("click", (e) => {
+      //   winId = e.target.innerText;
+      //   msgSection.style.display = "block";
+      // });
+
+
+      //function for getting onlinr windows link
+
+      function sendMsgToChild(){
+        let IdOfChild = document.getElementById("childId").value;
+        let msgToChild = document.getElementById("msgTochild").value;
+        // console.log(IdOfChild, msgToChild)
+        let msgObj = {
+            message : msgToChild,
+            id: IdOfChild,
+          
         }
-        ipcRenderer.on("child",(e,msg)=>{
-                document.getElementById("recMsg").innerText= msg
-        })
-        
-        
+
+        ipcRenderer.sendTo(Number(IdOfChild),"child-to-child", msgObj)
+      }
+
+
+      ipcRenderer.on("child-to-child",(e,msg)=>{
+        let preMsg = receiveMsgDiv.value;
+        // console.log(e)
+        receiveMsgDiv.innerText = `${preMsg} \n message received from ${e.senderId} : ${msg.message}`
+      })
+
+     
+
+      // ipcRenderer.on("second-window",(e,msg)=>{
+      //     console.log("message from child",msg.message)
+      // })
+      // ipcRenderer.sendTo(2,"third-window",{message:"hello"})
+
+      // ipcRenderer.on("third-window",(e,msg)=>{
+      //     console.log("message for other child",msg.message)
+      // })
+      // ipcRenderer.sendTo(4,"second-window",{message:"hello 2"})
     </script>
-</body>
+  </body>
 </html>
