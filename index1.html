@@ -62,7 +62,7 @@
       ipcRenderer.on("child", (e, msg) => {
         let preMsg = receiveMsgDiv.value
         console.log(msg);
-        receiveMsgDiv.innerText = `${preMsg} \n message received from ${msg.windowId} : ${msg.msgToSend}`
+        receiveMsgDiv.innerText = `${preMsg} \n message received from ${msg.id} : ${msg.message}`
       });
 
       // let winId;

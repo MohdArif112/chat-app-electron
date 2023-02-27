@@ -35,7 +35,7 @@ const createSecWin=()=>{
         }
     })
     secWin.loadFile("index1.html")
-    // secWin.webContents.openDevTools();
+    secWin.webContents.openDevTools();
     let Id = secWin.webContents.id;
     secWin.setTitle(Id.toString())
     // console.log(Id)
